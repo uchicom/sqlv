@@ -5,8 +5,8 @@ ports:
 tasks:
   - name: set JAVA_TOOL_OPTIONS
     command: |
-    echo export JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -Dsun.java2d.xrender=false\" >> /home/gitpod/.bashrc
-    source /home/gitpod/.bashrc
+      echo export JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -Dsun.java2d.xrender=false\" >> /home/gitpod/.bashrc
+      source /home/gitpod/.bashrc
 vscode:
   extensions:
     - redhat.java
