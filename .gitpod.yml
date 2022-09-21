@@ -1,4 +1,4 @@
-image: gitpod/workspace-full-vnc:2022-03-10-03-45-16
+image: gitpod/workspace-full-vnc:2022-07-12-11-05-29
 ports:
   - port: 6080
     onOpen: open-preview
@@ -14,4 +14,3 @@ vscode:
     - vscjava.vscode-java-debug
     - vscjava.vscode-java-pack
     - donjayamanne.githistory
-    - github.vscode-pull-request-github
