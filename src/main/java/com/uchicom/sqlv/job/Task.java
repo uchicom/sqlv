@@ -7,12 +7,16 @@ import java.sql.SQLException;
 public class Task {
 
   public String name;
+  public String driver;
   public String jdbcUrl;
   public String username;
   public String password;
   public String sql;
 
-  boolean execute() throws SQLException {
+  boolean execute() throws SQLException, ClassNotFoundException {
+    if (driver != null) {
+      Class.forName(driver);
+    }
     try (var con = DriverManager.getConnection(jdbcUrl, username, password)) {
       try (var state = con.createStatement()) {
         var result = state.execute(sql);

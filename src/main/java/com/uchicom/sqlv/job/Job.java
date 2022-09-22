@@ -22,7 +22,7 @@ public class Job {
     return config.jobs.get(name);
   }
 
-  public void execute() throws SQLException {
+  public void execute() throws SQLException, ClassNotFoundException {
     for (var task : tasks) {
       System.out.println(task.name + ":" + task.execute());
     }
