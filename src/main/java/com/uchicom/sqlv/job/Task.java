@@ -18,12 +18,17 @@ public class Task {
       Class.forName(driver);
     }
     try (var con = DriverManager.getConnection(jdbcUrl, username, password)) {
+      con.setAutoCommit(false);
       try (var state = con.createStatement()) {
         var result = state.execute(sql);
         con.commit();
         return result;
       } catch (SQLException e) {
-        con.rollback();
+        try {
+          con.rollback();
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
         throw e;
       }
     }
