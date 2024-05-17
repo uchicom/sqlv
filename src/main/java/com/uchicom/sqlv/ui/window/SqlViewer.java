@@ -1,22 +1,19 @@
 // (C) 2022 uchicom
 package com.uchicom.sqlv.ui.window;
 
-import com.uchicom.sqlv.db.Context;
+import com.uchicom.sqlv.db.SqlExecutor;
+import com.uchicom.sqlv.db.Table;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -25,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 public class SqlViewer extends JFrame {
+  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
   JTextArea sqlArea;
 
   JTabbedPane tabbedPane;
@@ -79,45 +77,50 @@ public class SqlViewer extends JFrame {
   }
 
   void execute() {
-    try (Connection con = Context.getConnection();
-        Statement state = con.createStatement();
-        ResultSet result = state.executeQuery(sqlArea.getText()); ) {
-      ResultSetMetaData metaData = result.getMetaData();
-      int columnCount = metaData.getColumnCount();
-      String[] header = new String[columnCount];
-      for (int i = 0; i < columnCount; i++) {
-        header[i] = metaData.getColumnLabel(i + 1);
-      }
-      List<String[]> resultList = new ArrayList<>();
-      while (result.next()) {
-        String[] row = new String[columnCount];
-        for (int i = 0; i < columnCount; i++) {
-          row[i] = result.getString(i + 1);
-        }
-        resultList.add(row);
-      }
-
-      addResult(new JTable(resultList.toArray(new String[0][0]), header));
-    } catch (Exception e) {
-      e.printStackTrace();
-      addResult(e.getMessage());
+    SqlExecutor executor = new SqlExecutor();
+    String sql = sqlArea.getText().trim();
+    if (sql.isBlank()) {
+      JOptionPane.showMessageDialog(this, "Please enter the SQL.");
+      return;
     }
+    Table table = null;
+    if (sql.toLowerCase().startsWith("select")) {
+      table = executor.query(sql);
+    } else {
+      table = executor.execute(sql);
+    }
+    if (table.errorMessage != null) {
+      addResult(sql, table.errorMessage);
+      return;
+    }
+    addResult(sql, table.createJTable());
   }
 
-  void addResult(String result) {
+  void addResult(String sql, String result) {
     JTextArea outputArea = new JTextArea();
     outputArea.setEditable(false);
     outputArea.setText(result);
-    tabbedPane.addTab(now(), new JScrollPane(outputArea));
+    addComponent(sql, new JScrollPane(outputArea));
   }
 
-  void addResult(JTable result) {
+  void addResult(String sql, JTable result) {
     result.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     result.setCellSelectionEnabled(true);
-    tabbedPane.addTab(now(), new JScrollPane(result));
+    addComponent(sql, new JScrollPane(result));
+  }
+
+  void addComponent(String sql, JComponent component) {
+    JPanel panel = new JPanel(new BorderLayout());
+    JTextArea sqlArea = new JTextArea();
+    sqlArea.setEditable(false);
+    sqlArea.setText(sql);
+    panel.add(sqlArea, BorderLayout.NORTH);
+    panel.add(new JScrollPane(component), BorderLayout.CENTER);
+    tabbedPane.addTab(now(), panel);
+    tabbedPane.setSelectedComponent(panel);
   }
 
   String now() {
-    return LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+    return LocalDateTime.now().format(formatter);
   }
 }
