@@ -77,12 +77,17 @@ public class SqlViewer extends JFrame {
   }
 
   void execute() {
-    SqlExecutor executor = new SqlExecutor();
+
     String sql = sqlArea.getText().trim();
     if (sql.isBlank()) {
       JOptionPane.showMessageDialog(this, "Please enter the SQL.");
       return;
     }
+    execute(sql);
+  }
+
+  void execute(String sql) {
+    SqlExecutor executor = new SqlExecutor();
     Table table = null;
     if (sql.toLowerCase().startsWith("select")) {
       table = executor.query(sql);
@@ -115,7 +120,18 @@ public class SqlViewer extends JFrame {
     JTextArea sqlArea = new JTextArea();
     sqlArea.setEditable(false);
     sqlArea.setText(sql);
-    splitPane.setTopComponent(new JScrollPane(sqlArea));
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(new JScrollPane(sqlArea), BorderLayout.CENTER);
+    panel.add(
+        new JButton(
+            new AbstractAction("Rerun") {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                execute(sqlArea.getText());
+              }
+            }),
+        BorderLayout.EAST);
+    splitPane.setTopComponent(panel);
     splitPane.setBottomComponent(new JScrollPane(component));
     splitPane.setDividerLocation(100);
     tabbedPane.addTab(now(), splitPane);
