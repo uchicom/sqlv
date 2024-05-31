@@ -100,24 +100,26 @@ public class SqlViewer extends JFrame {
     JTextArea outputArea = new JTextArea();
     outputArea.setEditable(false);
     outputArea.setText(result);
-    addComponent(sql, new JScrollPane(outputArea));
+    addComponent(sql, outputArea);
   }
 
   void addResult(String sql, JTable result) {
     result.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     result.setCellSelectionEnabled(true);
-    addComponent(sql, new JScrollPane(result));
+    addComponent(sql, result);
   }
 
   void addComponent(String sql, JComponent component) {
-    JPanel panel = new JPanel(new BorderLayout());
+
+    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     JTextArea sqlArea = new JTextArea();
     sqlArea.setEditable(false);
     sqlArea.setText(sql);
-    panel.add(sqlArea, BorderLayout.NORTH);
-    panel.add(new JScrollPane(component), BorderLayout.CENTER);
-    tabbedPane.addTab(now(), panel);
-    tabbedPane.setSelectedComponent(panel);
+    splitPane.setTopComponent(new JScrollPane(sqlArea));
+    splitPane.setBottomComponent(new JScrollPane(component));
+    splitPane.setDividerLocation(100);
+    tabbedPane.addTab(now(), splitPane);
+    tabbedPane.setSelectedComponent(splitPane);
   }
 
   String now() {
