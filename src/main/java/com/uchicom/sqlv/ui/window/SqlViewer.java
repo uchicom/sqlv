@@ -5,6 +5,7 @@ import com.uchicom.sqlv.db.SqlExecutor;
 import com.uchicom.sqlv.db.Table;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -122,15 +123,24 @@ public class SqlViewer extends JFrame {
     sqlArea.setText(sql);
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(new JScrollPane(sqlArea), BorderLayout.CENTER);
-    panel.add(
+    JPanel buttonPanel = new JPanel(new GridLayout(2, 1));
+    buttonPanel.add(
         new JButton(
             new AbstractAction("Rerun") {
               @Override
               public void actionPerformed(ActionEvent e) {
                 execute(sqlArea.getText());
               }
-            }),
-        BorderLayout.EAST);
+            }));
+    buttonPanel.add(
+        new JButton(
+            new AbstractAction("Copy") {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                copy(sqlArea.getText());
+              }
+            }));
+    panel.add(buttonPanel, BorderLayout.EAST);
     splitPane.setTopComponent(panel);
     splitPane.setBottomComponent(new JScrollPane(component));
     splitPane.setDividerLocation(100);
@@ -140,5 +150,9 @@ public class SqlViewer extends JFrame {
 
   String now() {
     return LocalDateTime.now().format(formatter);
+  }
+
+  void copy(String sql) {
+    sqlArea.setText(sql);
   }
 }
