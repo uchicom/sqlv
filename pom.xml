@@ -105,11 +105,6 @@
               <artifactId>error_prone_core</artifactId>
               <version>2.29.1</version>
             </path>
-            <path>
-              <groupId>com.google.dagger</groupId>
-              <artifactId>dagger-compiler</artifactId>
-              <version>2.52</version>
-            </path>
           </annotationProcessorPaths>
         </configuration>
       </plugin>
@@ -236,13 +231,6 @@
                   <goal>report</goal>
                 </goals>
                 <phase>test</phase>
-                <configuration>
-                  <excludes>
-                    <exclude>**/*_Factory*</exclude>
-                    <exclude>**/*_*Component*</exclude>
-                    <exclude>**/Dagger*</exclude>
-                  </excludes>
-                </configuration>
               </execution>
               <execution>
                 <id>check</id>
