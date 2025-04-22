@@ -8,7 +8,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -90,7 +92,7 @@ public class SqlViewer extends JFrame {
   void execute(String sql) {
     SqlExecutor executor = new SqlExecutor();
     Table table = null;
-    if (sql.toLowerCase().startsWith("select")) {
+    if (sql.toLowerCase(Locale.US).startsWith("select")) {
       table = executor.query(sql);
     } else {
       table = executor.execute(sql);
@@ -149,7 +151,7 @@ public class SqlViewer extends JFrame {
   }
 
   String now() {
-    return LocalDateTime.now().format(formatter);
+    return LocalDateTime.now(ZoneId.systemDefault()).format(formatter);
   }
 
   void copy(String sql) {

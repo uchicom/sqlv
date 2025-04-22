@@ -27,7 +27,7 @@ public class Task {
         try {
           con.rollback();
         } catch (Exception e1) {
-          e1.printStackTrace();
+          throw e;
         }
         throw e;
       }
