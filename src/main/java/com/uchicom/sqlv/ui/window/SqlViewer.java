@@ -28,6 +28,7 @@ public class SqlViewer extends JFrame {
 
   JTabbedPane tabbedPane;
   JCheckBox displayCheckBox;
+  JCheckBox commandCheckBox;
   JButton executeButton;
 
   JScrollPane topPane;
@@ -62,8 +63,10 @@ public class SqlViewer extends JFrame {
               }
             });
     displayCheckBox.setSelected(true);
+    commandCheckBox = new JCheckBox("Command");
     buttonPanel.add(executeButton);
     buttonPanel.add(displayCheckBox);
+    buttonPanel.add(commandCheckBox);
     sqlArea = new JTextArea();
     splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     topPane = new JScrollPane(sqlArea);
@@ -92,6 +95,8 @@ public class SqlViewer extends JFrame {
     Table table = null;
     if (sql.toLowerCase().startsWith("select")) {
       table = executor.query(sql);
+    } else if (commandCheckBox.isSelected()) {
+      table = executor.command(sql);
     } else {
       table = executor.execute(sql);
     }

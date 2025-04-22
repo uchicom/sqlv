@@ -47,4 +47,17 @@ public class SqlExecutor {
       return new Table(e.getMessage());
     }
   }
+
+  public Table command(String sql) {
+    try (Connection con = Context.getConnection();
+        Statement state = con.createStatement()) {
+      boolean result = state.execute(sql);
+      con.commit();
+      List<String[]> list = new ArrayList<>();
+      list.add(new String[] {String.valueOf(result)});
+      return new Table(new String[] {"result"}, list);
+    } catch (Exception e) {
+      return new Table(e.getMessage());
+    }
+  }
 }
