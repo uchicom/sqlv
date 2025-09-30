@@ -1,12 +1,15 @@
 // (C) 2022 uchicom
 package com.uchicom.sqlv.ui.window;
 
+import com.uchicom.sqlv.db.Context;
 import com.uchicom.sqlv.db.SqlExecutor;
 import com.uchicom.sqlv.db.Table;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -42,6 +45,12 @@ public class SqlViewer extends JFrame {
   }
 
   void initComponent() {
+    addWindowListener(
+        new WindowAdapter() {
+          public void windowClosed(WindowEvent e) {
+            Context.close();
+          }
+        });
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     JPanel buttonPanel = new JPanel();
     executeButton =
