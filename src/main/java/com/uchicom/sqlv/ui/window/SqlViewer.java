@@ -160,7 +160,7 @@ public class SqlViewer extends JFrame {
     splitPane.setTopComponent(panel);
     splitPane.setBottomComponent(new JScrollPane(component));
     splitPane.setDividerLocation(100);
-    tabbedPane.addTab(now(), splitPane);
+    tabbedPane.addTab(sql.split(" +")[0] + " - " + now(), splitPane);
     tabbedPane.setSelectedComponent(splitPane);
   }
 
